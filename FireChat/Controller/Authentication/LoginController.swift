@@ -33,7 +33,9 @@ class LoginController: UIViewController {
     button.setTitle("Log In", for: .normal)
     button.layer.cornerRadius = 5
     button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-    button.backgroundColor = UIColor(red: 254/255.0, green: 127/255.0, blue: 156/255.0, alpha: 1)
+    button.backgroundColor = .magenta
+//    button.layer.borderWidth = 1.0
+//    button.layer.borderColor = UIColor.white.cgColor
     button.setTitleColor(.white, for: .normal)
     button.setHeight(height: 50)
     return button
@@ -112,14 +114,5 @@ class LoginController: UIViewController {
 //    iconImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
 //    iconImage.widthAnchor.constraint(equalToConstant: 120).isActive = true
 
-  }
-  
-  
-  func configureGradientLayer() {
-    let gradient = CAGradientLayer()
-    gradient.colors = [UIColor.systemPurple.cgColor, UIColor.systemPink.cgColor]
-    gradient.locations = [0, 1]
-    view.layer.addSublayer(gradient)
-    gradient.frame = view.frame
   }
 }
