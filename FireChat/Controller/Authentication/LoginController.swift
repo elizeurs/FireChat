@@ -32,8 +32,9 @@ class LoginController: UIViewController {
     let button = UIButton(type: .system)
     button.setTitle("Log In", for: .normal)
     button.layer.cornerRadius = 5
-    button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-    button.backgroundColor = .systemRed
+    button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+    button.backgroundColor = UIColor(red: 254/255.0, green: 127/255.0, blue: 156/255.0, alpha: 1)
+    button.setTitleColor(.white, for: .normal)
     button.setHeight(height: 50)
     return button
   }()
@@ -47,11 +48,35 @@ class LoginController: UIViewController {
     return tf
   }()
   
+  private let dontHaveAccountButton: UIButton = {
+    let button = UIButton(type: .system)
+    let attributedTitle = NSMutableAttributedString(string: "Don't have an account? ",
+                                                    attributes: [.font: UIFont.systemFont(ofSize: 16),
+                                                                 .foregroundColor: UIColor.white])
+    attributedTitle.append(NSAttributedString(string: "Sign Up",
+                                              attributes: [.font: UIFont.boldSystemFont(ofSize: 16),
+                                                           .foregroundColor: UIColor.white]))
+    
+    button.setAttributedTitle(attributedTitle, for: .normal)
+    button.addTarget(self, action: #selector(handleShowSignUp), for: .touchUpInside)
+    
+    return  button
+  }()
+  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     configureUI()
+  }
+  
+  // MARK: - Selectors
+  
+  @objc func handleShowSignUp() {
+    let controller = RegistrationController()
+    navigationController?.pushViewController(controller, animated: true)
+    
+//    print("Show sign up page..")
   }
   
   
@@ -78,6 +103,8 @@ class LoginController: UIViewController {
     view.addSubview(stack)
     stack.anchor(top: iconImage.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 32, paddingLeft: 32, paddingRight: 32)
     
+    view.addSubview(dontHaveAccountButton)
+    dontHaveAccountButton.anchor(left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingLeft: 32, paddingRight: 32)
     
 //    iconImage.translatesAutoresizingMaskIntoConstraints = false
 //    iconImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
