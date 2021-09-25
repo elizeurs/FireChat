@@ -11,6 +11,8 @@ class LoginController: UIViewController {
   
   // MARK: - Properties
   
+  private var viewModel = LoginViewModel()
+  
   private let iconImage: UIImageView = {
     let iv = UIImageView()
     iv.image = UIImage(systemName: "bubble.right")
@@ -34,10 +36,13 @@ class LoginController: UIViewController {
     button.layer.cornerRadius = 5
     button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
     button.backgroundColor = .magenta
+    button.alpha = 0.5
 //    button.layer.borderWidth = 1.0
 //    button.layer.borderColor = UIColor.white.cgColor
     button.setTitleColor(.white, for: .normal)
     button.setHeight(height: 50)
+    button.isEnabled = false
+    button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
     return button
   }()
   
@@ -74,15 +79,39 @@ class LoginController: UIViewController {
   
   // MARK: - Selectors
   
+  @objc func handleLogin() {
+    print("DEBUG: Handle login here..")
+  }
+  
   @objc func handleShowSignUp() {
     let controller = RegistrationController()
     navigationController?.pushViewController(controller, animated: true)
-    
 //    print("Show sign up page..")
+  }
+  
+  @objc func textDidChange(sender: UITextField) {
+    if sender == emailTextField {
+      viewModel.email = sender.text
+    } else {
+      viewModel.password = sender.text
+    }
+    
+    checkFormStatus()
+//    print("Debug: Sender text is \(sender.text)")
   }
   
   
   // MARK: - Helpers
+  
+  func checkFormStatus() {
+    if viewModel.formIsValid {
+      loginButton.isEnabled = true
+      loginButton.alpha = 1
+    } else {
+      loginButton.isEnabled = false
+      loginButton.alpha = 0.4
+    }
+  }
   
   func configureUI() {
     navigationController?.navigationBar.isHidden = true
@@ -107,6 +136,9 @@ class LoginController: UIViewController {
     
     view.addSubview(dontHaveAccountButton)
     dontHaveAccountButton.anchor(left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingLeft: 32, paddingRight: 32)
+    
+    emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+    passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
     
 //    iconImage.translatesAutoresizingMaskIntoConstraints = false
 //    iconImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
