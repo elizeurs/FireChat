@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol AuthenticationControllerProtocol {
+  func checkFormStatus()
+}
+
 class LoginController: UIViewController {
   
   // MARK: - Properties
@@ -103,16 +107,6 @@ class LoginController: UIViewController {
   
   // MARK: - Helpers
   
-  func checkFormStatus() {
-    if viewModel.formIsValid {
-      loginButton.isEnabled = true
-      loginButton.alpha = 1
-    } else {
-      loginButton.isEnabled = false
-      loginButton.alpha = 0.4
-    }
-  }
-  
   func configureUI() {
     navigationController?.navigationBar.isHidden = true
     navigationController?.navigationBar.barStyle = .black
@@ -146,5 +140,17 @@ class LoginController: UIViewController {
 //    iconImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
 //    iconImage.widthAnchor.constraint(equalToConstant: 120).isActive = true
 
+  }
+}
+
+extension LoginController: AuthenticationControllerProtocol {
+  func checkFormStatus() {
+    if viewModel.formIsValid {
+      loginButton.isEnabled = true
+      loginButton.alpha = 1
+    } else {
+      loginButton.isEnabled = false
+      loginButton.alpha = 0.4
+    }
   }
 }
