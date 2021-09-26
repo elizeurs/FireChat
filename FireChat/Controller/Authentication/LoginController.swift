@@ -39,7 +39,7 @@ class LoginController: UIViewController {
     button.setTitle("Log In", for: .normal)
     button.layer.cornerRadius = 5
     button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-    button.backgroundColor = .magenta
+    button.backgroundColor = .systemPink
     button.alpha = 0.5
 //    button.layer.borderWidth = 1.0
 //    button.layer.borderColor = UIColor.white.cgColor
