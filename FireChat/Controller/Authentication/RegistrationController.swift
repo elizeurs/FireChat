@@ -31,16 +31,16 @@ class RegistrationController: UIViewController {
     return InputContainerView(image: UIImage(named: "ic_mail_outline_white_2x"), textField: emailTextField)
   }()
   
+  private lazy var passwordContainerView: InputContainerView = {
+    return InputContainerView(image: UIImage(named: "ic_mail_outline_white_2x"), textField: passwordTextField)
+  }()
+  
   private lazy var fullnameContainerView: UIView = {
     return InputContainerView(image: UIImage(named: "ic_person_outline_white_2x"), textField: fullnameTextField)
   }()
   
   private lazy var usernameContainerView: UIView = {
     return InputContainerView(image: UIImage(named: "ic_person_outline_white_2x"), textField: usernameTextField)
-  }()
-  
-  private lazy var passwordContainerView: InputContainerView = {
-    return InputContainerView(image: UIImage(named: "ic_mail_outline_white_2x"), textField: passwordTextField)
   }()
   
   private let emailTextField = CustomTextField(placeholder: "Email")
@@ -105,12 +105,16 @@ class RegistrationController: UIViewController {
 
     let credentials = RegistrationCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
     
+    showLoader(true, withText: "Signing You Up")
+    
     AuthService.shared.createUser(credentials: credentials) { error in
       if let error = error {
         print("DEBUG: \(error.localizedDescription)")
+        self.showLoader(false)
         return
       }
       
+      self.showLoader(false)
       self.dismiss(animated: true, completion: nil)
     }
   }
@@ -141,6 +145,18 @@ class RegistrationController: UIViewController {
     navigationController?.popViewController(animated: true)
   }
   
+  @objc func keyboardWillShow() {
+    if view.frame.origin.y != 0 {
+      self.view.frame.origin.y = 0
+    }
+  }
+  
+  @objc func keyboardWillHide() {
+    if view.frame.origin.y == 0 {
+      view.frame.origin.y = -50
+    }
+  }
+  
   
   // MARK: Helpers
   
@@ -153,9 +169,9 @@ class RegistrationController: UIViewController {
     plusPhotoButton.setDimensions(height: 200, width: 200)
     
     let stack = UIStackView(arrangedSubviews: [emailContainerView,
+                                               passwordContainerView,
                                                fullnameContainerView,
                                                usernameContainerView,
-                                               passwordContainerView,
                                                signUpButton])
     stack.axis = .vertical
     stack.spacing = 16
@@ -173,6 +189,10 @@ class RegistrationController: UIViewController {
     fullnameTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
     usernameTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
     passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardDidHideNotification, object: nil)
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillShowNotification, object: nil)
   }
 }
 
