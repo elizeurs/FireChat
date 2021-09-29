@@ -12,10 +12,19 @@ private let reuseIdentifier = "ConversationCell"
 
 class ConversationsController: UIViewController {
   
-  
   // MARK: - Properties
   
   private let tableview = UITableView()
+  
+  private let newMessageButton: UIButton = {
+    let button = UIButton(type: .system)
+    button.setImage(UIImage(systemName: "plus"), for: .normal)
+    button.backgroundColor = .systemPurple
+    button.tintColor = .white
+    button.imageView?.setDimensions(height: 24, width: 24)
+    button.addTarget(self, action: #selector(showNewMessage), for: .touchUpInside)
+    return button
+  }()
   
   
   // MARK: - LifeCycle
@@ -23,8 +32,6 @@ class ConversationsController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     configureUI()
-    configureNavigationBar()
-    configureTableView()
     authenticateUser()
   }
   
@@ -33,6 +40,14 @@ class ConversationsController: UIViewController {
   
   @objc func showProfile() {
     logout()
+//    print(123)
+  }
+  
+  @objc func showNewMessage() {
+    let controller = NewMessageController()
+    let nav = UINavigationController(rootViewController: controller)
+    nav.modalPresentationStyle = .fullScreen
+    present(nav, animated: true, completion: nil)
 //    print(123)
   }
   
@@ -72,11 +87,16 @@ class ConversationsController: UIViewController {
   func configureUI() {
     view.backgroundColor = .white
     
-    navigationController?.navigationBar.prefersLargeTitles = true
-    navigationItem.title = "Messages"
+    configureNavigationBar()
+    configureTableView()
     
     let image = UIImage(systemName: "person.circle.fill")
     navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(showProfile))
+    
+    view.addSubview(newMessageButton)
+    newMessageButton.setDimensions(height: 56, width: 56)
+    newMessageButton.layer.cornerRadius = 56 / 2
+    newMessageButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingBottom: 16, paddingRight: 24)
   }
   
   
