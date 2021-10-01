@@ -43,8 +43,10 @@ class ConversationsController: UIViewController {
 //    print(123)
   }
   
+  
   @objc func showNewMessage() {
     let controller = NewMessageController()
+    controller.delegate = self
     let nav = UINavigationController(rootViewController: controller)
     nav.modalPresentationStyle = .fullScreen
     present(nav, animated: true, completion: nil)
@@ -62,6 +64,7 @@ class ConversationsController: UIViewController {
 //      print("DEBUG: User is logged in. Configure controller..")
     }
   }
+  
   
   func logout() {
     do {
@@ -83,6 +86,7 @@ class ConversationsController: UIViewController {
       self.present(nav, animated: true, completion: nil)
     }
   }
+  
   
   func configureUI() {
     view.backgroundColor = .white
@@ -135,6 +139,19 @@ extension ConversationsController: UITableViewDataSource {
 extension ConversationsController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     print(indexPath.row)
+  }
+}
+
+
+//  MARK: - NewMessageControllerDelegate
+
+extension ConversationsController: NewMessageControllerDelegate {
+  func controller(_ controller: NewMessageController, wantsToStartChatWith user: User) {
+    controller.dismiss(animated: true, completion: nil)
+    let chat = ChatController(user: user)
+    navigationController?.pushViewController(chat, animated: true)
+    
+//    print("DEBUG: User in conversation controller is \(user.username)")
   }
 }
 
