@@ -7,11 +7,19 @@
 
 import UIKit
 
+// Using 'class' keyword to define a class-constrained protocol is deprecated; use 'AnyObject' instead
+// Replace 'class' with 'AnyObject'
+protocol CustomInputAccessoryViewDelegate: AnyObject {
+  func inputView(_ inputView: CustomInputAccessoryView, wantsToSend message: String)
+}
+
 class CustomInputAccessoryView: UIView {
   
   // MARK: - Properties
   
-  private let messageInputTextView: UITextView = {
+  weak var delegate : CustomInputAccessoryViewDelegate?
+  
+  lazy var messageInputTextView: UITextView = {
     let tv = UITextView()
     tv.font = UIFont.systemFont(ofSize: 16)
     tv.isScrollEnabled = false
@@ -61,6 +69,10 @@ class CustomInputAccessoryView: UIView {
     NotificationCenter.default.addObserver(self, selector: #selector(handleTextInputChange), name: UITextView.textDidChangeNotification, object: nil)
   }
   
+  override var intrinsicContentSize: CGSize {
+    return .zero
+  }
+  
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -74,12 +86,10 @@ class CustomInputAccessoryView: UIView {
   
   
   @objc func handleSendMessage() {
-    print("DEBUG: Handle send message here..")
-  }
-  
-  
-  override var intrinsicContentSize: CGSize {
-    return .zero
+    guard let message = messageInputTextView.text else { return }
+    delegate?.inputView(self, wantsToSend: message)
+    
+//    print("DEBUG: Handle send message here..")
   }
 }
 
