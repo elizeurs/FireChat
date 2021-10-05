@@ -47,7 +47,12 @@ class ConversationsController: UIViewController {
   // MARK: - Selectors
   
   @objc func showProfile() {
-    logout()
+    let controller = ProfileController()
+    let nav = UINavigationController(rootViewController: controller)
+    nav.modalPresentationStyle = .fullScreen
+    present(nav, animated: true, completion: nil)
+    
+//    logout()
 //    print(123)
   }
   
