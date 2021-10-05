@@ -9,7 +9,7 @@ import UIKit
 
 private let reuseIdentifier = "UserCell"
 
-protocol NewMessageControllerDelegate: class {
+protocol NewMessageControllerDelegate: AnyObject {
   func controller(_ controller: NewMessageController, wantsToStartChatWith user: User)
 }
 

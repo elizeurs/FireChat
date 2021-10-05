@@ -38,6 +38,12 @@ class ConversationsController: UIViewController {
   }
   
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    configureNavigationBar(withTitle: "Messages", prefersLargeTitles: true)
+  }
+  
+  
   // MARK: - Selectors
   
   @objc func showProfile() {
@@ -102,7 +108,6 @@ class ConversationsController: UIViewController {
   func configureUI() {
     view.backgroundColor = .white
     
-    configureNavigationBar(withTitle: "Messages", prefersLargeTitles: true)
     configureTableView()
     
     let image = UIImage(systemName: "person.circle.fill")
@@ -118,7 +123,7 @@ class ConversationsController: UIViewController {
   func  configureTableView() {
     tableview.backgroundColor = .white
     tableview.rowHeight = 80
-    tableview.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+    tableview.register(ConversationCell.self, forCellReuseIdentifier: reuseIdentifier)
     tableview.tableFooterView = UIView() // if you have only 2 cells, it will give you 2 separetor lines.
     tableview.delegate = self
     tableview.dataSource = self
@@ -126,6 +131,12 @@ class ConversationsController: UIViewController {
     view.addSubview(tableview)
     tableview.frame = view.frame
     
+  }
+  
+  
+  func showChatController(forUser user: User) {
+    let controller = ChatController(user: user)
+    navigationController?.pushViewController(controller, animated: true)
   }
 }
 
@@ -138,8 +149,8 @@ extension ConversationsController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableview.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-    cell.textLabel?.text = conversations[indexPath.row].message.text
+    let cell = tableview.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
+    cell.conversation = conversations[indexPath.row]
     return cell
   }
 }
@@ -149,7 +160,10 @@ extension ConversationsController: UITableViewDataSource {
 
 extension ConversationsController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    print(indexPath.row)
+    let user = conversations[indexPath.row].user
+    showChatController(forUser: user)
+    
+//    print(indexPath.row)
   }
 }
 
@@ -159,8 +173,7 @@ extension ConversationsController: UITableViewDelegate {
 extension ConversationsController: NewMessageControllerDelegate {
   func controller(_ controller: NewMessageController, wantsToStartChatWith user: User) {
     controller.dismiss(animated: true, completion: nil)
-    let chat = ChatController(user: user)
-    navigationController?.pushViewController(chat, animated: true)
+    showChatController(forUser: user)
     
 //    print("DEBUG: User in conversation controller is \(user.username)")
   }
